@@ -1,7 +1,7 @@
 import Got from 'got';
 import * as QueryString from 'query-string';
 
-import { IGenderPrediction, IUser } from '../interfaces/Entities';
+import { IGenderizePrediction, IGenderServicePrediction, IPredictionResponse, IUser } from '../interfaces/Entities';
 import { IGenderClassifier } from '../interfaces/Services';
 
 import ArrayUtils from '../utils/ArrayUtils';
@@ -16,8 +16,8 @@ export default class GenderService implements IGenderClassifier {
     public constructor(private readonly maxRequestChunkSize: number = 10) {
     }
 
-    public async classify(usersToPredict: IUser[]): Promise<IGenderPrediction[]> {
-        const usersClassified: IGenderPrediction[] = [];
+    public async classify(usersToPredict: IUser[]): Promise<IGenderizePrediction[]> {
+        const usersClassified: IGenderizePrediction[] = [];
         const usersGroupedByCountry = ArrayUtils.groupBy(ArrayUtils.filterDuplicates(usersToPredict), 'country', GenderService.unknownCountryId);
 
         for (const country in usersGroupedByCountry) {
@@ -33,8 +33,33 @@ export default class GenderService implements IGenderClassifier {
         return usersClassified;
     }
 
+    public async getServiceResponse(usersToPredict: IUser[]): Promise<IPredictionResponse> {
+        const convertToServiceResponse = (genderizePrediction: IGenderizePrediction): IGenderServicePrediction => {
+            const { gender, country_id, ...remainder } = genderizePrediction;
+            return {country: country_id, ...remainder};
+        }
 
-    private async serviceRequest(names: string[], countryId?: string): Promise<IGenderPrediction[]> {
+        const rawResponses = await this.classify(usersToPredict);
+        const groupedBy = ArrayUtils.groupBy(rawResponses, 'gender');
+
+        const response: IPredictionResponse = {
+            males: [],
+            females: [],
+        }
+
+        if (groupedBy['male']) {
+            response.males = groupedBy['male'].map((item) => convertToServiceResponse(item)); 
+        }
+
+        if (groupedBy['female']) {
+            response.females = groupedBy['female'].map((item) => convertToServiceResponse(item));
+        }
+
+        return response;
+    }
+
+
+    private async serviceRequest(names: string[], countryId?: string): Promise<IGenderizePrediction[]> {
         const queryString = QueryString.stringify({
             name: names,
             country_id: countryId,
@@ -42,7 +67,7 @@ export default class GenderService implements IGenderClassifier {
             arrayFormat: 'bracket',
         });
 
-        const response = await Got.get(`${ GenderService.genderizeUrl }?${ queryString }`).json() as IGenderPrediction[];
+        const response = await Got.get(`${ GenderService.genderizeUrl }?${ queryString }`).json() as IGenderizePrediction[];
 
         return response;
     }

@@ -1,9 +1,9 @@
-import { IUser, IGenderPrediction } from "../interfaces/Entities";
+import { IUser, IGenderizePrediction } from "../interfaces/Entities";
 import { UserCache } from "./userCacheService";
 
 let userCache: UserCache;
 
-const mockData: Array<{user: IUser, prediction: IGenderPrediction}> = [
+const mockData: Array<{user: IUser, prediction: IGenderizePrediction}> = [
     {
         user: {
             userName: 'topolino',
@@ -52,3 +52,15 @@ test('get', () => {
         userName: 'not-present'
     })).toBeFalsy();
 });
+
+test('set', () => {
+    const transgenderMinnie = {
+        name: 'minnie',
+        gender: 'male',
+        probability: 0.75,
+        count: 1,
+    };
+
+    userCache.set(mockData[1].user, transgenderMinnie);
+    expect(userCache.get(mockData[1].user)).toStrictEqual(transgenderMinnie);
+})

@@ -1,6 +1,6 @@
 
 
-import { IGenderPrediction, IUser } from '../interfaces/Entities';
+import { IGenderizePrediction, IUser } from '../interfaces/Entities';
 import { IServiceCache, IGenderClassifier } from '../interfaces/Services';
 
 import ArrayUtils from '../utils/ArrayUtils';
@@ -13,7 +13,7 @@ export default class GenderCachedService extends GenderService implements IGende
         super(maxRequestChunkSize);
     }
 
-    public async classify(usersToPredict: IUser[]): Promise<IGenderPrediction[]> {
+    public async classify(usersToPredict: IUser[]): Promise<IGenderizePrediction[]> {
         const userWithoutDuplicates = ArrayUtils.filterDuplicates(usersToPredict);
         const cachedResponses = userWithoutDuplicates.filter((user) => this.cache.has(user)).map((user) => this.cache.get(user));
         const uncachedUsers = userWithoutDuplicates.filter((user) => !this.cache.has(user));
@@ -23,7 +23,7 @@ export default class GenderCachedService extends GenderService implements IGende
         return cachedResponses.concat(uncachedResponses);
     }
 
-    private updateCache(users: IUser[], predictions: IGenderPrediction[]) {
+    private updateCache(users: IUser[], predictions: IGenderizePrediction[]) {
         const userAndCountryComparer = <T>(userProp: keyof T, countryProp: keyof T): (a: T, b: T) => number => {
             return (a, b) => {
                 if (String(a[userProp]).toLowerCase() === String(b[userProp]).toLowerCase()) {

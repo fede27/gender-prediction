@@ -1,26 +1,24 @@
 import Fastify, { FastifyInstance } from 'fastify';
 
-import GenderCachedService from './services/genderCachedService';
-import { UserCache } from './services/userCacheService';
-
 import { GenderAPISchema } from './interfaces/API';
 import { IUser } from './interfaces/Entities';
+import { CachedGenderServiceBuilder } from './utils/ServiceBuilder';
+import ArrayUtils from './utils/ArrayUtils';
 
 const server: FastifyInstance = Fastify({ logger: true });
-
-const cache = new UserCache();
 
 server.get('/', async (request, reply) => {
     server.log.error(`it works!`);
     reply.send({hello: "world"});
 });
 
+const genderService = (new CachedGenderServiceBuilder()).getService();
+
 server.post<{ Body: { userPredictions: IUser[] } }>('/user/genderprediction', {schema: GenderAPISchema }, async (request, reply) => {
     server.log.info(`gender-prediction request: ${ JSON.stringify(request.body) }`);
-    const genderService = new GenderCachedService(cache);
     const { userPredictions } = request.body;
 
-    const response = await genderService.classify(userPredictions);
+    const response = await genderService.getServiceResponse(userPredictions);
     reply.send(response);
 });
 

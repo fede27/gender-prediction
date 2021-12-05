@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 
-import { IUser } from '../interfaces/Entities';
+import { IGenderizePrediction, IUser } from '../interfaces/Entities';
 
 export default class ArrayUtils {
 
@@ -12,7 +12,7 @@ export default class ArrayUtils {
         }, []);
     }
 
-    public static groupBy<T extends IUser, Key extends keyof T>(items: T[], groupByProperty: Key, undefinedGroup: string = 'others'): {[property: string]: T[]} {
+    public static groupBy<T extends IUser | IGenderizePrediction, Key extends keyof T>(items: T[], groupByProperty: Key, undefinedGroup: string = 'others'): {[property: string]: T[]} {
         return items.reduce((memo, item) => {
             const group = groupByProperty in item ? String(item[groupByProperty]) : undefinedGroup;
             if (!memo[group]) {

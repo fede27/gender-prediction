@@ -6,7 +6,7 @@ const predictionSchema = {
         name: { type: 'string' },
         probability: { type: 'number'},
         count: { type: 'integer' },
-        contry: { type: 'string' }
+        country: { type: 'string' }
     },
     required: ['name', 'probability', 'count']
 }
