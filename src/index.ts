@@ -3,14 +3,8 @@ import Fastify, { FastifyInstance } from 'fastify';
 import { GenderAPISchema } from './interfaces/API';
 import { IUser } from './interfaces/Entities';
 import { CachedGenderServiceBuilder } from './utils/ServiceBuilder';
-import ArrayUtils from './utils/ArrayUtils';
 
 const server: FastifyInstance = Fastify({ logger: true });
-
-server.get('/', async (request, reply) => {
-    server.log.error(`it works!`);
-    reply.send({hello: "world"});
-});
 
 const genderService = (new CachedGenderServiceBuilder()).getService();
 
