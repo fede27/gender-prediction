@@ -33,8 +33,9 @@ server.post<{ Body: { userPredictions: IUser[] } }>('/user/genderprediction', {s
 const start = async () => {
     try {
         genderService = await (new CachedGenderServiceBuilder()).getService();
-        const port = process.env.PORT ?  process.env.PORT : 3001;
-        await server.listen(port);
+        const port = process.env.PORT || 3001;
+        const host = process.env.HOST || '0.0.0.0';
+        await server.listen(port, host);
     } catch (err) {
         server.log.error(err);
         process.exit(1);
