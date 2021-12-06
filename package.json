@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "Microservice test for Technogym",
   "main": "index.js",
-  "engines": { "node": "16.3.1" },
+  "engines": {
+    "node": "16.x"
+  },
   "scripts": {
     "start": "node dist/index.js",
     "test": "jest",
