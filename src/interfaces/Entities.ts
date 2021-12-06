@@ -8,14 +8,16 @@ export interface IUserPredictions {
     userPredictions: IUser[];
 }
 
-export interface IGenderizePrediction {
+export interface IGenderizeKey {
     name: string;
-    gender: string;
-    probability: number;
-    count: number;
     country_id?: string;
 }
 
+export interface IGenderizePrediction extends IGenderizeKey {
+    gender: string;
+    probability: number;
+    count: number;
+}
 
 export interface IGenderServicePrediction {
     name: string;

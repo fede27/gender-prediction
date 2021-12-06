@@ -1,12 +1,12 @@
 import hash from 'object-hash';
 
 import { IGenderizePrediction, IUser } from '../interfaces/Entities';
-import { IServiceCache } from '../interfaces/Services';
+import { ICacheService } from '../interfaces/Services';
 
 
-export class UserCache implements IServiceCache {
+export class UserCache implements ICacheService {
 
-    private cache: {[hash: string]: IGenderizePrediction} = { };
+    protected cache: {[hash: string]: IGenderizePrediction} = { };
 
     public constructor() {};
 
@@ -22,7 +22,11 @@ export class UserCache implements IServiceCache {
         this.cache[this.getHash(user)] = { ...prediction };
     }
 
-    private getHash(user: IUser): string {
+    protected getHash(user: IUser): string {
         return hash(user);
+    }
+
+    protected clear() {
+        this.cache = {};
     }
 }

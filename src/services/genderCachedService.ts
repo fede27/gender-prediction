@@ -1,7 +1,7 @@
 
 
-import { IGenderizePrediction, IUser } from '../interfaces/Entities';
-import { IServiceCache, IGenderClassifier } from '../interfaces/Services';
+import { IGenderizeKey, IGenderizePrediction, IUser } from '../interfaces/Entities';
+import { IGenderClassifier, ISynchronizableCacheService } from '../interfaces/Services';
 
 import ArrayUtils from '../utils/ArrayUtils';
 import GenderService from './genderService';
@@ -9,7 +9,7 @@ import GenderService from './genderService';
 
 export default class GenderCachedService extends GenderService implements IGenderClassifier {
 
-    public constructor(private readonly cache: IServiceCache, maxRequestChunkSize: number = 10) {
+    public constructor(private readonly cache: ISynchronizableCacheService<IGenderizePrediction, IGenderizeKey>, maxRequestChunkSize: number = 10) {
         super(maxRequestChunkSize);
     }
 
@@ -19,11 +19,11 @@ export default class GenderCachedService extends GenderService implements IGende
         const uncachedUsers = userWithoutDuplicates.filter((user) => !this.cache.has(user));
         const uncachedResponses = await super.classify(uncachedUsers);
 
-        this.updateCache(uncachedUsers, uncachedResponses);
+        await this.updateCache(uncachedUsers, uncachedResponses);
         return cachedResponses.concat(uncachedResponses);
     }
 
-    private updateCache(users: IUser[], predictions: IGenderizePrediction[]) {
+    protected async updateCache(users: IUser[], predictions: IGenderizePrediction[]): Promise<void> {
         const userAndCountryComparer = <T>(userProp: keyof T, countryProp: keyof T): (a: T, b: T) => number => {
             return (a, b) => {
                 if (String(a[userProp]).toLowerCase() === String(b[userProp]).toLowerCase()) {
@@ -49,5 +49,6 @@ export default class GenderCachedService extends GenderService implements IGende
         for (let i = 0; i < sortedUsers.length; i++) {
             this.cache.set(sortedUsers[i], sortedPredictions[i]);
         }
+        await this.cache.save();
     }
 }

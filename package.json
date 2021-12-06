@@ -19,9 +19,11 @@
   },
   "homepage": "https://github.com/fede27/gender-prediction#readme",
   "dependencies": {
+    "dotenv": "^10.0.0",
     "fastify": "~3.24.1",
     "got": "^11.8.3",
     "lodash": "~4.17.21",
+    "mongodb": "^4.2.1",
     "object-hash": "~2.2.0",
     "query-string": "~7.0.1"
   },
@@ -43,6 +45,6 @@
     "clearMocks": true,
     "collectCoverage": true,
     "coverageDirectory": "coverage",
-    "coverageProvider": "v8" 
+    "coverageProvider": "v8"
   }
 }
