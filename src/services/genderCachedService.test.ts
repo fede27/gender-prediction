@@ -2,7 +2,8 @@ import Nock from 'nock';
 import { UserCache } from './userCacheService';
 
 import GenderCachedService from './genderCachedService';
-import { IGenderizePrediction, IUser } from '../interfaces/Entities';
+import { IGenderizeKey, IGenderizePrediction, IUser } from '../interfaces/Entities';
+import { ISimpleRespository, ISynchronizableCacheService } from '../interfaces/Services';
 
 const mockRequest = [
     {
@@ -68,7 +69,15 @@ const mockServiceResponse = {
     ],
 }
 
-class MockCache extends UserCache {
+class MockCache extends UserCache implements ISynchronizableCacheService<IGenderizePrediction, IGenderizeKey> {
+    
+    setRepository(repository: ISimpleRespository<IGenderizePrediction, IGenderizeKey>): void {
+        throw new Error('Method not implemented.');
+    }
+    
+    load(): Promise<void> {
+        throw new Error('Method not implemented.');
+    }
     public setCount: number = 0;
     public getCount: number = 0;
 
@@ -80,6 +89,10 @@ class MockCache extends UserCache {
     public set(user: IUser, prediction: IGenderizePrediction): void {
         this.setCount++;
         super.set(user, prediction);
+    }
+
+    public async save(): Promise<void> {
+        return;
     }
 }
 
