@@ -45,6 +45,9 @@ const genderResponseSchema = {
     }
 }
 
+/**
+ * Fastify schema used by the service
+ */
 export const GenderAPISchema: FastifySchema = {
     body: genderRequestSchema,
     response: genderResponseSchema,

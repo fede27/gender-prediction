@@ -7,6 +7,9 @@ import ArrayUtils from '../utils/ArrayUtils';
 import GenderService from './genderService';
 
 
+/**
+ * A Gender Service that supports cache mechanisms. Requests are sent to the genderize.io service only when needed
+ */
 export default class GenderCachedService extends GenderService implements IGenderClassifier {
 
     public constructor(private readonly cache: ISynchronizableCacheService<IGenderizePrediction, IGenderizeKey>, maxRequestChunkSize: number = 10) {
@@ -23,6 +26,11 @@ export default class GenderCachedService extends GenderService implements IGende
         return cachedResponses.concat(uncachedResponses);
     }
 
+    /**
+     * Update the internal cache with the new results from genderize.io and flush the changes
+     * @param users user to add to the cache
+     * @param predictions genderize.io responses for these users
+     */
     protected async updateCache(users: IUser[], predictions: IGenderizePrediction[]): Promise<void> {
         const userAndCountryComparer = <T>(userProp: keyof T, countryProp: keyof T): (a: T, b: T) => number => {
             return (a, b) => {

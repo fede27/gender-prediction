@@ -12,12 +12,18 @@ export interface IGenderClassifier {
     getServiceResponse(usersToPredict: IUser[]): Promise<IPredictionResponse>;
 }
 
+/**
+ * Simple generic repository with basic methods for getting and inserting new items
+ */
 export interface ISimpleRespository<T, IdType> {
     insert(item: T): Promise<boolean>;
     getAll(): Promise<T[]>;
     getOne(key: IdType): Promise<T>;
 }
 
+/**
+ * A cache service that can synchronize with a repository
+ */
 export interface ISynchronizableCacheService<T, IdType> extends ICacheService {
     setRepository(repository: ISimpleRespository<T, IdType>): void;
     load(): Promise<void>

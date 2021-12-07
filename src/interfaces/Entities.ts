@@ -13,6 +13,9 @@ export interface IGenderizeKey {
     country_id?: string;
 }
 
+/**
+ * Genderize prediction is the iterface provided by genderize.io on its outputs
+ */
 export interface IGenderizePrediction extends IGenderizeKey {
     gender: string;
     probability: number;
@@ -25,6 +28,10 @@ export interface IGenderServicePrediction {
     count: number;
     country?: string;
 }
+
+/**
+ * Interface for the service output
+ */
 export interface IPredictionResponse {
     males?: IGenderServicePrediction[];
     females?: IGenderServicePrediction[];

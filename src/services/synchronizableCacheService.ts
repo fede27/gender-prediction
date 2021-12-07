@@ -2,7 +2,9 @@ import { IGenderizeKey, IGenderizePrediction, IUser } from "../interfaces/Entiti
 import { ISimpleRespository, ISynchronizableCacheService } from "../interfaces/Services";
 import { UserCache } from "./userCacheService";
 
-
+/**
+ * A cache service that can use a repository for persist the items
+ */
 export class SynchronizableCache extends UserCache implements ISynchronizableCacheService<IGenderizePrediction, IGenderizeKey> {
 
     private unsavedItems: {[key: string]: IGenderizePrediction} = {};
@@ -12,6 +14,9 @@ export class SynchronizableCache extends UserCache implements ISynchronizableCac
         this.repository = repository;
     }
 
+    /**
+     * Load the data from the repository
+     */
     public async load(): Promise<void> {
         if (!this.repository) {
             throw 'No repository set';
@@ -26,6 +31,9 @@ export class SynchronizableCache extends UserCache implements ISynchronizableCac
         this.clearUnsavedItems();
     }
 
+    /**
+     * Save the new values to the repository
+     */
     public async save(): Promise<void> {
         if (!this.repository) {
             throw 'No repository set';

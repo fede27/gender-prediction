@@ -4,6 +4,9 @@ import { IGenderizePrediction, IUser } from '../interfaces/Entities';
 import { ICacheService } from '../interfaces/Services';
 
 
+/**
+ * Simple cache for storing predictions from the genderize.io service
+ */
 export class UserCache implements ICacheService {
 
     protected cache: {[hash: string]: IGenderizePrediction} = { };

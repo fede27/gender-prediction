@@ -4,7 +4,9 @@ import { IGenderizeKey, IGenderizePrediction } from "../interfaces/Entities";
 import { ISimpleRespository } from '../interfaces/Services';
 
 
-
+/**
+ * Basic repositry for storing and retriving generize.io response to MongoDB
+ */
 export class UserGenderRepository implements ISimpleRespository<IGenderizePrediction, IGenderizeKey>  {
 
     private readonly client: MongoDb.MongoClient;

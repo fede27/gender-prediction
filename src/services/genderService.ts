@@ -7,7 +7,9 @@ import { IGenderClassifier } from '../interfaces/Services';
 import ArrayUtils from '../utils/ArrayUtils';
 
 
-
+/**
+ * Base service for classify an array of users based on the gender suggested by their names
+ */
 export default class GenderService implements IGenderClassifier {
 
     private static readonly unknownCountryId = 'unknown';
@@ -16,6 +18,12 @@ export default class GenderService implements IGenderClassifier {
     public constructor(private readonly maxRequestChunkSize: number = 10) {
     }
 
+    /**
+     * Base classification method. Given an array of users to predict, returns the user classified
+     * according to the genderize.io service
+     * @param usersToPredict array of users to classify
+     * @returns for each input user, the prediction given by genderize.io service
+     */
     public async classify(usersToPredict: IUser[]): Promise<IGenderizePrediction[]> {
         const usersClassified: IGenderizePrediction[] = [];
         const usersGroupedByCountry = ArrayUtils.groupBy(ArrayUtils.filterDuplicates(usersToPredict), 'country', GenderService.unknownCountryId);
@@ -33,6 +41,12 @@ export default class GenderService implements IGenderClassifier {
         return usersClassified;
     }
 
+    /**
+     * Given a list of users to predict, returns the users classified with the scores taken from genderize.io
+     * The output gives a list of males and females users
+     * @param usersToPredict the array with the users to classify
+     * @returns A response according to the service interface
+     */
     public async getServiceResponse(usersToPredict: IUser[]): Promise<IPredictionResponse> {
         const convertToServiceResponse = (genderizePrediction: IGenderizePrediction): IGenderServicePrediction => {
             const { gender, country_id, ...remainder } = genderizePrediction;
